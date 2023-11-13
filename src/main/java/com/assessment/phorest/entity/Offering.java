@@ -7,7 +7,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MappedSuperclass;
 
 @MappedSuperclass
-public abstract class Offerings {
+public abstract class Offering {
 
     @ManyToOne
     @JoinColumn(name = "appointment_id")

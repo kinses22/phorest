@@ -11,7 +11,7 @@ import java.util.UUID;
 @Data
 @Entity
 @Table(name = "service")
-public class Service extends Offerings {
+public class Service extends Offering {
 
     @Id
     @Column(name = "service_id", length = 36, nullable = false)

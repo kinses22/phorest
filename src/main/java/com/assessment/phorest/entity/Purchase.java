@@ -11,7 +11,7 @@ import java.util.UUID;
 @Entity
 @Data
 @Table(name = "purchase")
-public class Purchase extends Offerings {
+public class Purchase extends Offering {
 
     @Id
     @Column(name = "purchase_id", nullable = false)
