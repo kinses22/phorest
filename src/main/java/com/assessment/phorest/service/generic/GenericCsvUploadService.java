@@ -39,41 +39,54 @@ public abstract class GenericCsvUploadService<DTO, Entity> {
 
     //todo: bring back a model - errors etc etc
     public String processCsvFiles(MultipartFile file) {
-
-        // todo: errors -
         List<String> errors = new ArrayList<>();
         String fileName = file.getOriginalFilename();
         // todo: handle no file as we get 500 back
         CsvFileConfig csvFileConfig = CsvConfig.getConfigForFile(fileName);
+        List<DTO> dTOList = parseCsvFile(file, csvFileConfig, errors);
+        saveEntities(dTOList);
+        // todo: return model with errors, status etc
+        return "hi";
 
+    }
+
+    private List<DTO> parseCsvFile(MultipartFile file, CsvFileConfig csvFileConfig, List<String> errors) {
         List<DTO> dTOList = new ArrayList<>();
-        try (CSVParser csvParser = CSVFormat.DEFAULT.builder().setHeader(csvFileConfig.getHeaders()).setSkipHeaderRecord(true)
-                .build().parse(new InputStreamReader(file.getInputStream()))) {
+        try (CSVParser csvParser = createCsvParser(file, csvFileConfig)) {
             for (CSVRecord csvRecord : csvParser) {
-                try {
-                    DTO dto = genericCsvDto.createDTO(csvRecord);
-                    Set<ConstraintViolation<DTO>> violations = validator.validate(dto);
-                    if (violations.isEmpty()) {
-                        dTOList.add(dto);
-                    }
-                } catch (IllegalArgumentException e) {
-                    errors.add(csvRecord.get("id"));
-                }
+                processCsvRecord(csvRecord, dTOList, errors);
             }
         } catch (IOException | IllegalArgumentException e) {
             log.info("There was an issue parsing the csv file: {}, {}", e.getMessage(), e);
             // THROW HERE AS ISSUE WITH PARSING
         }
+        return dTOList;
+    }
 
-        //todo: factory pattern & iterate over all and save individually as FK might not exist
+    private CSVParser createCsvParser(MultipartFile file, CsvFileConfig csvFileConfig) throws IOException {
+        return CSVFormat.DEFAULT.builder()
+                .setHeader(csvFileConfig.getHeaders())
+                .setSkipHeaderRecord(true)
+                .build()
+                .parse(new InputStreamReader(file.getInputStream()));
+    }
 
+    private void processCsvRecord(CSVRecord csvRecord, List<DTO> dTOList, List<String> errors) {
+        try {
+            DTO dto = genericCsvDto.createDTO(csvRecord);
+            Set<ConstraintViolation<DTO>> violations = validator.validate(dto);
+            if (violations.isEmpty()) {
+                dTOList.add(dto);
+            }
+        } catch (IllegalArgumentException e) {
+            errors.add(csvRecord.get("id"));
+        }
+    }
+
+    private void saveEntities(List<DTO> dTOList) {
         List<Entity> entityList = new ArrayList<>();
         dTOList.forEach(dto -> entityList.add(mapper.mapToEntity(dto)));
         genericRepository.saveAll(entityList);
-
-        // todo: return model with errors, status etc
-        return "hi";
-
     }
 
 

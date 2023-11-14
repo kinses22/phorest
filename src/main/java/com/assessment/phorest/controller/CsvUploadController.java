@@ -26,7 +26,10 @@ public class CsvUploadController {
     }
 
     @PostMapping( value = "/upload" , consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<String> uploadCsvFile(@RequestPart("file") List<MultipartFile> csvFiles) {
+    public ResponseEntity<String> uploadCsvFile(@RequestPart("files") List<MultipartFile> csvFiles) {
+        if (csvFiles.isEmpty()){
+            return ResponseEntity.noContent().build();
+        }
         String result = csvFileProcessingService.processClientCsvFile(csvFiles);
         return ResponseEntity.ok(result);
     }
