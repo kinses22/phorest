@@ -52,6 +52,7 @@ public abstract class GenericCsvUploadService<DTO, Entity> {
 
     private List<DTO> parseCsvFile(MultipartFile file, CsvFileConfig csvFileConfig, List<String> errors) {
         List<DTO> dTOList = new ArrayList<>();
+
         try (CSVParser csvParser = createCsvParser(file, csvFileConfig)) {
             for (CSVRecord csvRecord : csvParser) {
                 processCsvRecord(csvRecord, dTOList, errors);
