@@ -4,7 +4,7 @@ import jakarta.validation.constraints.*;
 import lombok.Data;
 
 @Data
-public abstract class OfferingDTO {
+public abstract class OfferingDTO implements CsvDataDTO {
 
     public OfferingDTO(String id, String appointment_id, String name, double price, int loyaltyPoints) {
         this.id = id;
