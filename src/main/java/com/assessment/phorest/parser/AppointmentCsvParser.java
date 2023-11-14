@@ -1,11 +1,11 @@
-package com.assessment.phorest.dto.csv;
+package com.assessment.phorest.parser;
 
 import com.assessment.phorest.dto.AppointmentDTO;
 import org.apache.commons.csv.CSVRecord;
 import org.springframework.stereotype.Component;
 
 @Component
-public class AppointmentCsvDTO implements GenericCsvDto<AppointmentDTO> {
+public class AppointmentCsvParser implements GenericCsvParser<AppointmentDTO> {
 
     @Override
     public AppointmentDTO createDTO(CSVRecord csvRecord) {

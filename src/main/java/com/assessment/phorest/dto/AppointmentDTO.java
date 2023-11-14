@@ -1,5 +1,6 @@
 package com.assessment.phorest.dto;
 
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
@@ -26,6 +27,7 @@ public class AppointmentDTO implements CsvDataDTO {
     }
 
     @Size(max = 36, message = "Appointment id can't exceed 36 characters")
+    @NotEmpty
     private String id;
 
     private ClientDTO clientDTO;

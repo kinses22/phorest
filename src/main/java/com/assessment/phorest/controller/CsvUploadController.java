@@ -1,5 +1,6 @@
 package com.assessment.phorest.controller;
 
+import com.assessment.phorest.dto.response.CSVBatchProcessingResponseDTO;
 import com.assessment.phorest.service.implementation.CsvFileProcessingService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
@@ -26,11 +27,11 @@ public class CsvUploadController {
     }
 
     @PostMapping( value = "/upload" , consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<String> uploadCsvFile(@RequestPart("files") List<MultipartFile> csvFiles) {
+    public ResponseEntity<CSVBatchProcessingResponseDTO> uploadCsvFile(@RequestPart("files") List<MultipartFile> csvFiles) {
         if (csvFiles.isEmpty()){
             return ResponseEntity.noContent().build();
         }
-        String result = csvFileProcessingService.processClientCsvFile(csvFiles);
+        CSVBatchProcessingResponseDTO result = csvFileProcessingService.processCsvFiles(csvFiles);
         return ResponseEntity.ok(result);
     }
 

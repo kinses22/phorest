@@ -10,15 +10,19 @@ public class PurchaseDTO implements CsvDataDTO {
 
     public PurchaseDTO(String id, String appointment_id, String name, double price, int loyaltyPoints) {
         this.id = id;
-        this.appointmentDTO = new AppointmentDTO(appointment_id);
+        if (!appointment_id.isEmpty()) {
+            this.appointmentDTO = new AppointmentDTO(appointment_id);
+        }
         this.name = name;
         this.price = price;
         this.loyaltyPoints = loyaltyPoints;
     }
 
     @Size(max = 36, message = "Purchase id can't exceed 36 characters")
+    @NotEmpty
     private String id;
 
+    @NotNull(message = "dsfdsfd")
     private AppointmentDTO appointmentDTO;
 
     @Size(max = 40, min = 1, message = "Purchase name can't exceed 40 characters or be blank")

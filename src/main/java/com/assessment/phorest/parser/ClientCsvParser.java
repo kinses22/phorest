@@ -1,4 +1,4 @@
-package com.assessment.phorest.dto.csv;
+package com.assessment.phorest.parser;
 
 import com.assessment.phorest.dto.ClientDTO;
 import com.assessment.phorest.enumeration.Gender;
@@ -6,7 +6,7 @@ import org.apache.commons.csv.CSVRecord;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ClientCsvDTO implements GenericCsvDto<ClientDTO> {
+public class ClientCsvParser implements GenericCsvParser<ClientDTO> {
 
     @Override
     public ClientDTO createDTO(CSVRecord csvRecord) {

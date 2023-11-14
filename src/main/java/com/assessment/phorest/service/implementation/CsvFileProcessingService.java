@@ -1,15 +1,16 @@
 package com.assessment.phorest.service.implementation;
 
-import com.assessment.phorest.configuration.CsvUploadServiceConfig;
+import com.assessment.phorest.dto.response.CSVBatchProcessingResponseDTO;
+import com.assessment.phorest.dto.response.CSVFileProcessingResponseDTO;
 import com.assessment.phorest.service.CsvFileUploadService;
-import com.assessment.phorest.util.FileOrderUtil;
 import jakarta.annotation.Resource;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
+import static com.assessment.phorest.util.FileConstants.ALLOWED_FILE_NAMES;
+import static com.assessment.phorest.util.FileConstants.DESIRED_ORDER;
 
 @Service
 public class CsvFileProcessingService {
@@ -21,17 +22,37 @@ public class CsvFileProcessingService {
         this.csvUploadServiceMap = csvUploadServiceMap;
     }
 
-    public String processClientCsvFile(List<MultipartFile> files) {
-        List<MultipartFile> orderFiles = FileOrderUtil.orderFiles(files);
+    public CSVBatchProcessingResponseDTO processCsvFiles(List<MultipartFile> files) {
+        CSVBatchProcessingResponseDTO csvBatchProcessingResponseDTO = new CSVBatchProcessingResponseDTO();
+        Map<String, MultipartFile> matchingFilesMap = new HashMap<>();
+        List<String> nonMatchingFilesList = new ArrayList<>();
 
-        for (MultipartFile file: orderFiles) {
-            String fileName = file.getOriginalFilename();
-            CsvFileUploadService csvFileUploadService = csvUploadServiceMap.get(fileName);
-            csvFileUploadService.processCsvFiles(file);
+        getSupportedFileNamesAndTypes(files, matchingFilesMap, nonMatchingFilesList);
+
+        for (String orderedFileName : DESIRED_ORDER) {
+            MultipartFile file = matchingFilesMap.get(orderedFileName);
+            if (file != null) {
+                CsvFileUploadService csvFileUploadService = csvUploadServiceMap.get(file.getOriginalFilename());
+                if (csvFileUploadService != null) {
+                    //todo: return a responseDTO that forms part of a bigger DTO and add it
+                    csvBatchProcessingResponseDTO.setUnSupportedFiles(nonMatchingFilesList);
+                    csvBatchProcessingResponseDTO
+                            .getCsvFileProcessingResponseDTOList().add(csvFileUploadService.processCsvFiles(file));
+                }
+
+            }
         }
-
-        return "Hi";
+        return csvBatchProcessingResponseDTO;
     }
 
-
+    private void getSupportedFileNamesAndTypes(List<MultipartFile> files, Map<String, MultipartFile> matchingFilesMap, List<String> nonMatchingFilesList) {
+        for (MultipartFile file : files) {
+            String fileName = Objects.requireNonNull(file.getOriginalFilename()).toLowerCase();
+            if (ALLOWED_FILE_NAMES.contains(fileName)) {
+                matchingFilesMap.put(fileName, file);
+            } else {
+                nonMatchingFilesList.add(fileName);
+            }
+        }
+    }
 }

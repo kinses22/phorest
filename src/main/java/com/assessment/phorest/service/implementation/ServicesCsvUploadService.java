@@ -1,11 +1,8 @@
 package com.assessment.phorest.service.implementation;
 
 import com.assessment.phorest.dao.GenericRepository;
-import com.assessment.phorest.dto.PurchaseDTO;
 import com.assessment.phorest.dto.ServiceDTO;
-import com.assessment.phorest.dto.csv.GenericCsvDto;
-import com.assessment.phorest.entity.Purchase;
-import com.assessment.phorest.mapper.PurchaseMapper;
+import com.assessment.phorest.parser.GenericCsvParser;
 import com.assessment.phorest.mapper.ServiceMapper;
 import com.assessment.phorest.service.CsvFileUploadService;
 import com.assessment.phorest.service.generic.GenericCsvUploadService;
@@ -20,8 +17,8 @@ public class ServicesCsvUploadService extends GenericCsvUploadService<ServiceDTO
     public ServicesCsvUploadService(
             GenericRepository<com.assessment.phorest.entity.Service> genericRepository,
             ServiceMapper serviceMapper,
-            GenericCsvDto<ServiceDTO> genericCsvDto,
+            GenericCsvParser<ServiceDTO> genericCsvParser,
             Validator validator) {
-        super(genericRepository, serviceMapper, genericCsvDto, validator);
+        super(genericRepository, serviceMapper, genericCsvParser, validator);
     }
 }

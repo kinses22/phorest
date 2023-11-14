@@ -25,7 +25,6 @@ public class CsvUploadServiceConfig {
         map.put("appointments.csv", appointmentCsvUploadService);
         map.put("purchases.csv", purchaseCsvUploadService);
         map.put("services.csv", servicesCsvUploadService);
-        // todo: service
 
         return map;
     }
