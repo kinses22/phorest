@@ -3,6 +3,7 @@ package com.assessment.phorest.service;
 
 import com.assessment.phorest.dto.ClientDTO;
 import com.assessment.phorest.dto.TopClientDTO;
+import com.assessment.phorest.dto.request.ClientRequestDTO;
 import com.assessment.phorest.entity.Client;
 import org.springframework.data.domain.Page;
 
@@ -17,6 +18,6 @@ public interface ClientService {
 
     void deleteClientById(String clientID);
 
-    public ClientDTO updateClient(ClientDTO clientDTO, ClientDTO newClientDto);
+    ClientDTO updateClient(ClientDTO clientDTO, ClientRequestDTO newClientDto);
 
 }

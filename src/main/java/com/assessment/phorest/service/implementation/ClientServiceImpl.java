@@ -3,7 +3,9 @@ package com.assessment.phorest.service.implementation;
 import com.assessment.phorest.dao.ClientRepository;
 import com.assessment.phorest.dto.ClientDTO;
 import com.assessment.phorest.dto.TopClientDTO;
+import com.assessment.phorest.dto.request.ClientRequestDTO;
 import com.assessment.phorest.entity.Client;
+import com.assessment.phorest.enumeration.Gender;
 import com.assessment.phorest.mapper.ClientMapper;
 import com.assessment.phorest.service.ClientService;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +18,7 @@ import org.springframework.stereotype.Service;
 import java.time.*;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Consumer;
 
 @Slf4j
 @Service
@@ -51,13 +54,21 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public ClientDTO updateClient(ClientDTO clientDTO, ClientDTO newClientDto) {
+    public ClientDTO updateClient(ClientDTO clientDTO, ClientRequestDTO newClientDto) {
 
-        clientDTO.setId(clientDTO.getId());
+        updateIfNotNullOrNotEmpty(newClientDto.getFirstName(), clientDTO::setFirstName);
+        updateIfNotNullOrNotEmpty(newClientDto.getSecondName(), clientDTO::setSecondName);
+        updateIfNotNullOrNotEmpty(newClientDto.getEmail(), clientDTO::setEmail);
+        updateIfNotNullOrNotEmpty(newClientDto.getPhone(), clientDTO::setPhone);
 
-
-
-        return null;
+        if (!newClientDto.getGender().isEmpty() | newClientDto.getGender() != null) {
+            clientDTO.setGender(Gender.valueOf(newClientDto.getGender()));
+        }
+        if (newClientDto.getBanned()) {
+            clientDTO.setBanned(newClientDto.getBanned());
+        }
+        clientRepository.save(clientMapper.mapToEntity(clientDTO));
+        return clientDTO;
     }
 
     private void validateLimit(int limit) {
@@ -74,5 +85,10 @@ public class ClientServiceImpl implements ClientService {
         }
     }
 
+    private void updateIfNotNullOrNotEmpty(String newValue, Consumer<String> setter) {
+        if (newValue != null && !newValue.isEmpty()) {
+            setter.accept(newValue);
+        }
+    }
 
 }

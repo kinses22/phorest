@@ -3,6 +3,7 @@ package com.assessment.phorest.controller;
 
 import com.assessment.phorest.dto.ClientDTO;
 import com.assessment.phorest.dto.TopClientDTO;
+import com.assessment.phorest.dto.request.ClientRequestDTO;
 import com.assessment.phorest.service.ClientService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
@@ -51,8 +52,9 @@ public class ClientController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @PatchMapping("/{clientId}")
-    public ResponseEntity<ClientDTO> updateClient(@PathVariable String clientId, @RequestBody ClientDTO updatedClient) {
+    @PutMapping("/{clientId}")
+    public ResponseEntity<ClientDTO> updateClient(@PathVariable String clientId,
+                                                  @RequestBody ClientRequestDTO updatedClient) {
         Optional<ClientDTO> existingClient = clientService.getClientById(clientId);
         if (existingClient.isPresent()) {
             ClientDTO result = clientService.updateClient(existingClient.get(), updatedClient);
