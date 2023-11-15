@@ -50,6 +50,15 @@ public class ClientServiceImpl implements ClientService {
         clientRepository.deleteById(UUID.fromString(clientID));
     }
 
+    @Override
+    public ClientDTO updateClient(ClientDTO clientDTO, ClientDTO newClientDto) {
+
+        clientDTO.setId(clientDTO.getId());
+
+
+        return null;
+    }
+
     private void validateLimit(int limit) {
         if (limit <= 0 || limit >= 1000 ) {
             log.error("Validation failure on limit: {} . It must be greater than 0 and less than 1000 ", limit);

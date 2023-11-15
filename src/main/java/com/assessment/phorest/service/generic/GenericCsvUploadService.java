@@ -1,7 +1,7 @@
 package com.assessment.phorest.service.generic;
 
 import com.assessment.phorest.dao.GenericRepository;
-import com.assessment.phorest.dto.response.CSVFileProcessingResponseDTO;
+import com.assessment.phorest.dto.response.CSVChildProcessingResponseDTO;
 import com.assessment.phorest.enumeration.Status;
 import com.assessment.phorest.mapper.GenericMapper;
 import com.assessment.phorest.row.GenericCsvRowMapper;
@@ -44,14 +44,14 @@ public abstract class GenericCsvUploadService<DTO, Entity> {
         this.validator = validator;
     }
 
-    public CSVFileProcessingResponseDTO processCsvFiles(MultipartFile file) {
+    public CSVChildProcessingResponseDTO processCsvFiles(MultipartFile file) {
         Map<String, List<String>> validationErrors = new HashMap<>();
         String fileName = file.getOriginalFilename();
         CsvFileConfig csvFileConfig = CsvConfig.getConfigForFile(fileName);
         List<DTO> dTOList = parseCsvFile(file, csvFileConfig, validationErrors);
         int records = saveEntities(dTOList, csvFileConfig.getDtoType(), validationErrors);
         Status status = getUploadStatus(validationErrors, records);
-        return new CSVFileProcessingResponseDTO(fileName, validationErrors, status, records);
+        return new CSVChildProcessingResponseDTO(fileName, validationErrors, status, records);
 
     }
 

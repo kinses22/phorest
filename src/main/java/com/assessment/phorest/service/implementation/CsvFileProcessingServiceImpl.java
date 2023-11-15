@@ -1,7 +1,6 @@
 package com.assessment.phorest.service.implementation;
 
-import com.assessment.phorest.dto.response.CSVBatchProcessingResponseDTO;
-import com.assessment.phorest.dto.response.CSVFileProcessingResponseDTO;
+import com.assessment.phorest.dto.response.CSVParentProcessingResponseDTO;
 import com.assessment.phorest.service.CsvFileProcessingService;
 import com.assessment.phorest.service.CsvFileUploadService;
 import jakarta.annotation.Resource;
@@ -23,25 +22,25 @@ public class CsvFileProcessingServiceImpl implements CsvFileProcessingService {
         this.csvUploadServiceMap = csvUploadServiceMap;
     }
 
-    public CSVBatchProcessingResponseDTO processCsvFiles(List<MultipartFile> files) {
-        CSVBatchProcessingResponseDTO csvBatchProcessingResponseDTO = new CSVBatchProcessingResponseDTO();
+    public CSVParentProcessingResponseDTO uploadCsvFiles(List<MultipartFile> files) {
+        CSVParentProcessingResponseDTO csvParentProcessingResponseDTO = new CSVParentProcessingResponseDTO();
         Map<String, MultipartFile> matchingFilesMap = new HashMap<>();
         List<String> nonMatchingFilesList = new ArrayList<>();
 
         getSupportedFileNamesAndTypes(files, matchingFilesMap, nonMatchingFilesList);
-        csvBatchProcessingResponseDTO.setUnSupportedFiles(nonMatchingFilesList);
+        csvParentProcessingResponseDTO.setUnSupportedFiles(nonMatchingFilesList);
         for (String orderedFileName : DESIRED_ORDER) {
             MultipartFile file = matchingFilesMap.get(orderedFileName);
             if (file != null) {
                 CsvFileUploadService csvFileUploadService = csvUploadServiceMap.get(file.getOriginalFilename());
                 if (csvFileUploadService != null) {
-                    csvBatchProcessingResponseDTO
-                            .getCsvFileProcessingResponseDTOList().add(csvFileUploadService.processCsvFiles(file));
+                    csvParentProcessingResponseDTO
+                            .getCsvChildProcessingResponseDTOList().add(csvFileUploadService.processCsvFiles(file));
                 }
 
             }
         }
-        return csvBatchProcessingResponseDTO;
+        return csvParentProcessingResponseDTO;
     }
 
     private void getSupportedFileNamesAndTypes(List<MultipartFile> files, Map<String, MultipartFile> matchingFilesMap, List<String> nonMatchingFilesList) {

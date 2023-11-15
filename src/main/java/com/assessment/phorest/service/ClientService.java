@@ -3,6 +3,7 @@ package com.assessment.phorest.service;
 
 import com.assessment.phorest.dto.ClientDTO;
 import com.assessment.phorest.dto.TopClientDTO;
+import com.assessment.phorest.entity.Client;
 import org.springframework.data.domain.Page;
 
 import java.time.LocalDate;
@@ -15,5 +16,7 @@ public interface ClientService {
     Page<TopClientDTO> listTopClients(LocalDate startDate, int limit);
 
     void deleteClientById(String clientID);
+
+    public ClientDTO updateClient(ClientDTO clientDTO, ClientDTO newClientDto);
 
 }

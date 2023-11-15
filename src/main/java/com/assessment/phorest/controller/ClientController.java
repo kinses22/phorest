@@ -51,4 +51,15 @@ public class ClientController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
+    @PatchMapping("/{clientId}")
+    public ResponseEntity<ClientDTO> updateClient(@PathVariable String clientId, @RequestBody ClientDTO updatedClient) {
+        Optional<ClientDTO> existingClient = clientService.getClientById(clientId);
+        if (existingClient.isPresent()) {
+            ClientDTO result = clientService.updateClient(existingClient.get(), updatedClient);
+            return ResponseEntity.ok(result);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
+
 }

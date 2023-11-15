@@ -9,7 +9,7 @@ import java.util.Map;
 
 @AllArgsConstructor
 @Data
-public class CSVFileProcessingResponseDTO {
+public class CSVChildProcessingResponseDTO {
     private String fileName;
     private Map<String, List<String>> validationErrors;
     private Status status;

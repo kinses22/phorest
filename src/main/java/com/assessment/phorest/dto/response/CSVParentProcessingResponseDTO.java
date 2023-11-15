@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
-public class CSVBatchProcessingResponseDTO {
+public class CSVParentProcessingResponseDTO {
     List<String> unSupportedFiles;
-    List<CSVFileProcessingResponseDTO> csvFileProcessingResponseDTOList = new ArrayList<>();
+    List<CSVChildProcessingResponseDTO> csvChildProcessingResponseDTOList = new ArrayList<>();
 }
