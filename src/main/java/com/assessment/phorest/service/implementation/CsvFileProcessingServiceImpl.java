@@ -29,14 +29,13 @@ public class CsvFileProcessingServiceImpl implements CsvFileProcessingService {
         List<String> nonMatchingFilesList = new ArrayList<>();
 
         getSupportedFileNamesAndTypes(files, matchingFilesMap, nonMatchingFilesList);
-
+        csvBatchProcessingResponseDTO.setUnSupportedFiles(nonMatchingFilesList);
         for (String orderedFileName : DESIRED_ORDER) {
             MultipartFile file = matchingFilesMap.get(orderedFileName);
             if (file != null) {
                 CsvFileUploadService csvFileUploadService = csvUploadServiceMap.get(file.getOriginalFilename());
                 if (csvFileUploadService != null) {
                     //todo: return a responseDTO that forms part of a bigger DTO and add it
-                    csvBatchProcessingResponseDTO.setUnSupportedFiles(nonMatchingFilesList);
                     csvBatchProcessingResponseDTO
                             .getCsvFileProcessingResponseDTOList().add(csvFileUploadService.processCsvFiles(file));
                 }

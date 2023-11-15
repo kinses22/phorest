@@ -33,7 +33,8 @@ public class ClientDTO implements CsvDataDTO {
 
     private List<AppointmentDTO> mapAppointmentsToDTOs(List<Appointment> appointments) {
         return appointments.stream()
-                .map(appointment -> new AppointmentDTO(appointment.getId().toString(), appointment.getStartTime()))
+                .map(appointment -> new AppointmentDTO(appointment.getId().toString(), appointment.getStartTime(),
+                        appointment.getEndTime()))
                 .collect(Collectors.toList());
     }
 

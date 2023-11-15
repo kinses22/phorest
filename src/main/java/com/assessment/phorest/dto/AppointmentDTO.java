@@ -24,9 +24,10 @@ public class AppointmentDTO implements CsvDataDTO {
         this.purchaseDTO = new ArrayList<>();
     }
 
-    public AppointmentDTO(String id, OffsetDateTime startTime) {
+    public AppointmentDTO(String id, OffsetDateTime startTime, OffsetDateTime endTime) {
         this.id = id;
         this.startTime = startTime;
+        this.endTime = endTime;
     }
 
     public AppointmentDTO(String id) {
