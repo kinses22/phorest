@@ -25,7 +25,6 @@ public class ClientDTO implements CsvDataDTO {
     @NotEmpty
     private String id;
 
-    @JsonIgnoreProperties("client")
     private List<AppointmentDTO> appointments;
 
     @Size(max = 20, message = "Customer name can't exceed 40 characters")

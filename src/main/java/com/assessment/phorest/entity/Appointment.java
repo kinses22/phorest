@@ -20,10 +20,9 @@ public class Appointment {
     @Column(name = "appointment_id", length = 36, nullable = false)
     private UUID id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JsonProperty("clientDTO")
     @JoinColumn(name = "client_id")
-    @JsonBackReference
     private Client client;
 
     @Column(name = "start_time")
@@ -39,7 +38,6 @@ public class Appointment {
 
     @JsonProperty("purchaseDTO")
     @OneToMany(mappedBy = "appointment", cascade = CascadeType.REFRESH, orphanRemoval = true, fetch = FetchType.LAZY)
-    @JsonManagedReference
     private List<Purchase> purchases = new ArrayList<>();
 
 }

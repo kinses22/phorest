@@ -19,7 +19,6 @@ public class Purchase {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "appointment_id")
     @JsonProperty("appointmentDTO")
-    @JsonBackReference
     private Appointment appointment;
 
     @Column(name = "name", length = 40)

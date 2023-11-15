@@ -19,9 +19,8 @@ public class Client {
     @Column(name = "client_id", length = 36, nullable = false)
     private UUID id;
 
-    @OneToMany(mappedBy = "client", cascade = CascadeType.REFRESH, orphanRemoval = true, fetch = FetchType.LAZY)
-    @JsonManagedReference
-    private List<Appointment> appointments = new ArrayList<>();
+    @OneToMany(mappedBy = "client", cascade = CascadeType.REFRESH, orphanRemoval = true, fetch = FetchType.EAGER)
+    private List<Appointment> appointments;
 
     @Column(name = "first_name", length = 20)
     private String firstName;

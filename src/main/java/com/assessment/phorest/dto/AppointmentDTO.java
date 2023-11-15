@@ -31,7 +31,6 @@ public class AppointmentDTO implements CsvDataDTO {
     @NotEmpty
     private String id;
 
-    @JsonIgnore
     private ClientDTO clientDTO;
 
     @NotNull
