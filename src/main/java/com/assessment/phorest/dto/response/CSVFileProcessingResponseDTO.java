@@ -12,6 +12,5 @@ import java.util.Map;
 public class CSVFileProcessingResponseDTO {
     private String fileName;
     private Map<String, List<String>> validationErrors;
-    private Map<String, String> rollbackError;
     private Status status;
 }

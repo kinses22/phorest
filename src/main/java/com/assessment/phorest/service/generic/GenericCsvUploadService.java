@@ -19,12 +19,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.beans.PropertyDescriptor;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
+
+import static com.assessment.phorest.util.EntityUtil.getId;
 
 @Slf4j
 public abstract class GenericCsvUploadService<DTO, Entity> {
@@ -45,13 +46,12 @@ public abstract class GenericCsvUploadService<DTO, Entity> {
 
     public CSVFileProcessingResponseDTO processCsvFiles(MultipartFile file) {
         Map<String, List<String>> validationErrors = new HashMap<>();
-        Map<String, String> rollbackErrors = new HashMap<>();
         String fileName = file.getOriginalFilename();
         CsvFileConfig csvFileConfig = CsvConfig.getConfigForFile(fileName);
         List<DTO> dTOList = parseCsvFile(file, csvFileConfig, validationErrors);
-        saveEntities(dTOList, csvFileConfig.getDtoType(), rollbackErrors);
-        Status status = getUploadStatus(validationErrors, rollbackErrors);
-        return new CSVFileProcessingResponseDTO(fileName, validationErrors, rollbackErrors, status);
+        saveEntities(dTOList, csvFileConfig.getDtoType(), validationErrors);
+        Status status = getUploadStatus(validationErrors);
+        return new CSVFileProcessingResponseDTO(fileName, validationErrors, status);
 
     }
 
@@ -97,29 +97,28 @@ public abstract class GenericCsvUploadService<DTO, Entity> {
         }
     }
 
-    private void saveEntities(List<DTO> dTOList, String dTO, Map<String, String> validationErrors) {
+    private void saveEntities(List<DTO> dTOList, String dTO, Map<String, List<String>> validationErrors) {
         List<Entity> entityList = new ArrayList<>();
         dTOList.forEach(dto -> entityList.add(mapper.mapToEntity(dto)));
-        // todo: turn to save and loop and add validationErrors to ones who dont save.
-        //  Use reflection to get access to the generic entity id
+        AtomicReference<UUID> entityId = new AtomicReference<>();
         try {
-            genericRepository.saveAll(entityList);
+            entityList.forEach( entity -> {
+                entityId.set(getId(entity));
+                    genericRepository.save(entity);
+                    }
+                    );
         } catch (ConstraintViolationException | EntityNotFoundException | DataIntegrityViolationException e) {
-            validationErrors.put(dTO + " File", dTO + " File could not be processed and had to be rolled back " +
-                    "due to: " + e.getMessage() + " . Please ensure you have uploaded the associated records " +
-                    "in the parent table.");
+            log.error("Sql Constraint error for entity: {} and id: {} , {}", dTO, entityId, e.getMessage());
+            validationErrors.put(entityId.toString(), List.of("Sql constraint error"));
         } catch (Exception e) {
-            validationErrors.put(dTO + " File", dTO + " File could not be processed and had to be rolled back " +
-                    "due to: " + e.getMessage() + " . Please ensure you have uploaded the associated records " +
-                    "in the parent table.");
+            log.error("Sql error for entity: {} and id: {} , {}", dTO, entityId, e.getMessage());
+            validationErrors.put(entityId.toString(), List.of(e.getCause().toString()));
         }
     }
 
-    private Status getUploadStatus(Map<String, List<String>> validationErrors, Map<String, String> rollbackErrors) {
+    private Status getUploadStatus(Map<String, List<String>> validationErrors) {
         Status status = Status.PROCESSED;
-        if(!rollbackErrors.isEmpty()){
-            status = Status.NOT_PROCESSED;
-        } else if (!validationErrors.isEmpty()){
+        if (!validationErrors.isEmpty()){
             status = Status.PARTIALLY_PROCESSED;
         }
         return status;
