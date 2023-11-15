@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -19,7 +18,8 @@ public class Client {
     @Column(name = "client_id", length = 36, nullable = false)
     private UUID id;
 
-    @OneToMany(mappedBy = "client", cascade = CascadeType.REFRESH, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "client", cascade = CascadeType.REFRESH, orphanRemoval = true, fetch = FetchType.LAZY)
+    @JsonManagedReference
     private List<Appointment> appointments;
 
     @Column(name = "first_name", length = 20)

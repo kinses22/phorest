@@ -1,6 +1,6 @@
 package com.assessment.phorest.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class AppointmentDTO implements CsvDataDTO {
 
     public AppointmentDTO(String id, String clientId, String startTime, String endTime) {
@@ -21,6 +22,11 @@ public class AppointmentDTO implements CsvDataDTO {
         this.endTime = OffsetDateTime.parse(endTime, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss Z"));
         this.serviceDTO = new ArrayList<>();
         this.purchaseDTO = new ArrayList<>();
+    }
+
+    public AppointmentDTO(String id, OffsetDateTime startTime) {
+        this.id = id;
+        this.startTime = startTime;
     }
 
     public AppointmentDTO(String id) {
@@ -42,6 +48,5 @@ public class AppointmentDTO implements CsvDataDTO {
     private List<ServiceDTO> serviceDTO;
 
     private List<PurchaseDTO> purchaseDTO;
-
 }
 

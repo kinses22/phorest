@@ -21,7 +21,9 @@ public class ClientMapper implements GenericMapper<ClientDTO, Client> {
     }
 
     public ClientDTO mapToDTO(Client client) {
-        return objectMapper.convertValue(client, ClientDTO.class);
+        return new ClientDTO(client.getId().toString(), client.getAppointments(), client.getFirstName(),
+        client.getSecondName(), client.getEmail(), client.getPhone(), client.getGender(),
+        client.isBanned());
     }
 }
 

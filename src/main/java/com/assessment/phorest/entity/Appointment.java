@@ -20,9 +20,10 @@ public class Appointment {
     @Column(name = "appointment_id", length = 36, nullable = false)
     private UUID id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonProperty("clientDTO")
     @JoinColumn(name = "client_id")
+    @JsonBackReference
     private Client client;
 
     @Column(name = "start_time")
