@@ -10,7 +10,6 @@ import com.assessment.phorest.row.ClientCsvRowMapper
 import jakarta.validation.ConstraintViolation
 import jakarta.validation.Validator
 import org.springframework.mock.web.MockMultipartFile
-import org.springframework.web.multipart.MultipartFile
 import spock.lang.Specification
 import spock.lang.Subject
 
@@ -19,25 +18,31 @@ class ClientCsvUploadServiceSpec extends Specification {
     @Subject
     ClientCsvUploadService clientCsvUploadService;
 
-    ClientMapper clientMapper = Mock(ClientMapper)
+    def clientMapper = Mock(ClientMapper)
 
-    ClientCsvRowMapper genericCsvRowMapper = Mock(ClientCsvRowMapper)
+    def genericCsvRowMapper = Mock(ClientCsvRowMapper)
 
-    ClientRepository genericRepository = Mock(ClientRepository)
+    def genericRepository = Mock(ClientRepository)
 
-    Validator validator = Mock(Validator)
+    def validator = Mock(Validator)
+
+    def multipartFile;
+
+    def mockEntity
+
+    def mockDTO
 
     def setup() {
         clientCsvUploadService = new ClientCsvUploadService(genericRepository, clientMapper, genericCsvRowMapper, validator)
+        multipartFile = new MockMultipartFile("clients.csv", "clients.csv", "text/csv",
+                new FileInputStream(new File("clients.csv")));
+        mockDTO = mockDTO()
+        mockEntity = mockEntity()
+        2 * genericCsvRowMapper.createDTO(_) >> mockDTO
     }
 
     def "should process CSV file and return expected status of processed"() {
         given:
-        MultipartFile multipartFile = new MockMultipartFile("clients.csv","clients.csv","text/csv",
-                new FileInputStream(new File("clients.csv")));
-        def mockDTO = mockDTO()
-        def mockEntity = mockEntity()
-        2 * genericCsvRowMapper.createDTO(_) >> mockDTO
         2 * validator.validate(mockDTO) >> []
         2 * clientMapper.mapToEntity(mockDTO) >> mockEntity
         2 * genericRepository.save(mockEntity)
@@ -54,10 +59,6 @@ class ClientCsvUploadServiceSpec extends Specification {
 
     def "should not process CSV file and return expected status of not processed"() {
         given:
-        def multipartFile = new MockMultipartFile("clients.csv","clients.csv","text/csv",
-                new FileInputStream(new File("clients.csv")));
-        def mockDTO = mockDTO()
-
         def violationMessage = 'email invalid'
         def constraintViolation = Mock(ConstraintViolation)
         Set<ConstraintViolation<?>> violations = new HashSet<>()
@@ -67,7 +68,6 @@ class ClientCsvUploadServiceSpec extends Specification {
         def result = clientCsvUploadService.processCsvFiles(multipartFile)
 
         then:
-        2 * genericCsvRowMapper.createDTO(_) >> mockDTO
         2 * validator.validate(mockDTO) >> violations
         2 * constraintViolation.getMessage() >> violationMessage
 
@@ -81,10 +81,6 @@ class ClientCsvUploadServiceSpec extends Specification {
 
     def "should partially process CSV file and return expected status of partially processed"() {
         given:
-        def multipartFile = new MockMultipartFile("clients.csv","clients.csv","text/csv",
-                new FileInputStream(new File("clients.csv")));
-        def mockDTO = mockDTO()
-        def mockEntity = mockEntity()
 
         def violationMessage = 'email invalid'
         def constraintViolation = Mock(ConstraintViolation)
@@ -95,7 +91,6 @@ class ClientCsvUploadServiceSpec extends Specification {
         def result = clientCsvUploadService.processCsvFiles(multipartFile)
 
         then:
-        2 * genericCsvRowMapper.createDTO(_) >> mockDTO
         1 * validator.validate(mockDTO) >> violations
         1 * validator.validate(mockDTO) >> []
         1 * constraintViolation.getMessage() >> violationMessage
