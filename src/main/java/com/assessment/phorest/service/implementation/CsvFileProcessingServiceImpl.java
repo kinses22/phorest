@@ -35,7 +35,6 @@ public class CsvFileProcessingServiceImpl implements CsvFileProcessingService {
             if (file != null) {
                 CsvFileUploadService csvFileUploadService = csvUploadServiceMap.get(file.getOriginalFilename());
                 if (csvFileUploadService != null) {
-                    //todo: return a responseDTO that forms part of a bigger DTO and add it
                     csvBatchProcessingResponseDTO
                             .getCsvFileProcessingResponseDTOList().add(csvFileUploadService.processCsvFiles(file));
                 }

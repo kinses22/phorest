@@ -13,4 +13,5 @@ public class CSVFileProcessingResponseDTO {
     private String fileName;
     private Map<String, List<String>> validationErrors;
     private Status status;
+    private int recordsProcessed;
 }

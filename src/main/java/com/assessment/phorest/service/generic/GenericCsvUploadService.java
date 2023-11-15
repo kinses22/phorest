@@ -19,10 +19,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.beans.PropertyDescriptor;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static com.assessment.phorest.util.EntityUtil.getId;
@@ -49,9 +49,9 @@ public abstract class GenericCsvUploadService<DTO, Entity> {
         String fileName = file.getOriginalFilename();
         CsvFileConfig csvFileConfig = CsvConfig.getConfigForFile(fileName);
         List<DTO> dTOList = parseCsvFile(file, csvFileConfig, validationErrors);
-        saveEntities(dTOList, csvFileConfig.getDtoType(), validationErrors);
-        Status status = getUploadStatus(validationErrors);
-        return new CSVFileProcessingResponseDTO(fileName, validationErrors, status);
+        int records = saveEntities(dTOList, csvFileConfig.getDtoType(), validationErrors);
+        Status status = getUploadStatus(validationErrors, records);
+        return new CSVFileProcessingResponseDTO(fileName, validationErrors, status, records);
 
     }
 
@@ -97,28 +97,32 @@ public abstract class GenericCsvUploadService<DTO, Entity> {
         }
     }
 
-    private void saveEntities(List<DTO> dTOList, String dTO, Map<String, List<String>> validationErrors) {
+    private int saveEntities(List<DTO> dTOList, String dTO, Map<String, List<String>> validationErrors) {
         List<Entity> entityList = new ArrayList<>();
         dTOList.forEach(dto -> entityList.add(mapper.mapToEntity(dto)));
         AtomicReference<UUID> entityId = new AtomicReference<>();
-        try {
-            entityList.forEach( entity -> {
+        AtomicInteger counter = new AtomicInteger(0);
+        entityList.forEach(entity -> {
+            try {
                 entityId.set(getId(entity));
-                    genericRepository.save(entity);
-                    }
-                    );
-        } catch (ConstraintViolationException | EntityNotFoundException | DataIntegrityViolationException e) {
-            log.error("Sql Constraint error for entity: {} and id: {} , {}", dTO, entityId, e.getMessage());
-            validationErrors.put(entityId.toString(), List.of("Sql constraint error"));
-        } catch (Exception e) {
-            log.error("Sql error for entity: {} and id: {} , {}", dTO, entityId, e.getMessage());
-            validationErrors.put(entityId.toString(), List.of(e.getCause().toString()));
-        }
+                genericRepository.save(entity);
+                counter.incrementAndGet();
+            } catch (ConstraintViolationException | EntityNotFoundException | DataIntegrityViolationException e) {
+                log.error("Sql Constraint error for entity: {} and id: {} , {}", dTO, entityId, e.getMessage());
+                validationErrors.put(entityId.toString(), List.of("Sql constraint error"));
+            } catch (Exception e) {
+                log.error("Sql error for entity: {} and id: {} , {}", dTO, entityId, e.getMessage());
+                validationErrors.put(entityId.toString(), List.of(e.getCause().toString()));
+            }
+        });
+        return counter.get();
     }
 
-    private Status getUploadStatus(Map<String, List<String>> validationErrors) {
+    private Status getUploadStatus(Map<String, List<String>> validationErrors, int recordsProcessed) {
         Status status = Status.PROCESSED;
-        if (!validationErrors.isEmpty()){
+        if (recordsProcessed == 0){
+            status = Status.NOT_PROCESSED;
+        } else if (!validationErrors.isEmpty()){
             status = Status.PARTIALLY_PROCESSED;
         }
         return status;
