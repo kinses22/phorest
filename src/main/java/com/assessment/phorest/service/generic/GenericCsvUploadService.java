@@ -2,8 +2,8 @@ package com.assessment.phorest.service.generic;
 
 import com.assessment.phorest.dao.GenericRepository;
 import com.assessment.phorest.dto.response.CSVFileProcessingResponseDTO;
-import com.assessment.phorest.row.GenericCsvRowMapper;
 import com.assessment.phorest.mapper.GenericMapper;
+import com.assessment.phorest.row.GenericCsvRowMapper;
 import com.assessment.phorest.util.CsvConfig;
 import com.assessment.phorest.util.CsvFileConfig;
 import jakarta.validation.ConstraintViolation;
@@ -17,6 +17,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.*;
 
 @Slf4j
@@ -34,6 +36,7 @@ public abstract class GenericCsvUploadService<DTO, Entity> {
         this.mapper = mapper;
         this.genericCsvRowMapper = genericCsvRowMapper;
         this.validator = validator;
+        ParameterizedType genericSuperclass = (ParameterizedType) getClass().getGenericSuperclass();
     }
 
     public CSVFileProcessingResponseDTO processCsvFiles(MultipartFile file) {
@@ -42,7 +45,7 @@ public abstract class GenericCsvUploadService<DTO, Entity> {
         // todo: handle no file as we get 500 back
         CsvFileConfig csvFileConfig = CsvConfig.getConfigForFile(fileName);
         List<DTO> dTOList = parseCsvFile(file, csvFileConfig, errors);
-        saveEntities(dTOList);
+        saveEntities(dTOList, csvFileConfig.getDtoType(), errors);
         return new CSVFileProcessingResponseDTO(fileName, errors);
 
     }
@@ -87,13 +90,15 @@ public abstract class GenericCsvUploadService<DTO, Entity> {
         }
     }
 
-    private void saveEntities(List<DTO> dTOList) {
+    private void saveEntities(List<DTO> dTOList, String dTO, Map<String, List<String>> errors) {
         List<Entity> entityList = new ArrayList<>();
         dTOList.forEach(dto -> entityList.add(mapper.mapToEntity(dto)));
         // todo: turn to save and loop and add errors to ones who dont save.
         //  Use reflection to get access to the generic entity id
-        genericRepository.saveAll(entityList);
+        try {
+            genericRepository.saveAll(entityList);
+        } catch (Exception e) {
+            errors.put(dTO, List.of(e.getMessage()));
+        }
     }
-
-
 }
