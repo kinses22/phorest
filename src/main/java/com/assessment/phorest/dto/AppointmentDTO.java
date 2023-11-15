@@ -10,6 +10,7 @@ import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -18,8 +19,8 @@ public class AppointmentDTO implements CsvDataDTO {
     public AppointmentDTO(String id, String clientId, String startTime, String endTime) {
         this.id = id;
         this.clientDTO = new ClientDTO(clientId);
-        this.startTime = OffsetDateTime.parse(startTime, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss Z"));
-        this.endTime = OffsetDateTime.parse(endTime, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss Z"));
+        this.startTime = Objects.equals(startTime, "") ? null : OffsetDateTime.parse(startTime, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss Z"));
+        this.endTime = Objects.equals(endTime, "") ? null : OffsetDateTime.parse(endTime, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss Z"));
         this.serviceDTO = new ArrayList<>();
         this.purchaseDTO = new ArrayList<>();
     }

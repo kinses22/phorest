@@ -28,24 +28,4 @@ public class GlobalExceptionHandler {
         log.error("InvalidFormatException: " + ex.getMessage(), ex);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Bad Request: " + ex.getMessage());
     }
-
-    @ExceptionHandler(EntityNotFoundException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity<String> handleEntityNotFoundException(EntityNotFoundException ex) {
-        log.error("EntityNotFoundException: " + ex.getMessage(), ex);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Bad Request: " + ex.getMessage()
-                + ". Please ensure you have uploaded associated data");    }
-
-    @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity<String> handleSQLIntegrityConstraintViolationException(SQLIntegrityConstraintViolationException ex) {
-        log.error("SQLIntegrityConstraintViolationException: " + ex.getMessage(), ex);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Bad Request: " + ex.getMessage()
-        + ". Please ensure you have uploaded associated data");
-    }
-
-
-
-
-
 }

@@ -1,5 +1,6 @@
 package com.assessment.phorest.dto.response;
 
+import com.assessment.phorest.enumeration.Status;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -10,5 +11,7 @@ import java.util.Map;
 @Data
 public class CSVFileProcessingResponseDTO {
     private String fileName;
-    private Map<String, List<String>> errors;
+    private Map<String, List<String>> validationErrors;
+    private Map<String, String> rollbackError;
+    private Status status;
 }
