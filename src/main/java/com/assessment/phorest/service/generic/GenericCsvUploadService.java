@@ -41,14 +41,12 @@ public abstract class GenericCsvUploadService<DTO, Entity> {
         this.mapper = mapper;
         this.genericCsvRowMapper = genericCsvRowMapper;
         this.validator = validator;
-        ParameterizedType genericSuperclass = (ParameterizedType) getClass().getGenericSuperclass();
     }
 
     public CSVFileProcessingResponseDTO processCsvFiles(MultipartFile file) {
         Map<String, List<String>> validationErrors = new HashMap<>();
         Map<String, String> rollbackErrors = new HashMap<>();
         String fileName = file.getOriginalFilename();
-        // todo: handle no file as we get 500 back
         CsvFileConfig csvFileConfig = CsvConfig.getConfigForFile(fileName);
         List<DTO> dTOList = parseCsvFile(file, csvFileConfig, validationErrors);
         saveEntities(dTOList, csvFileConfig.getDtoType(), rollbackErrors);
@@ -65,8 +63,8 @@ public abstract class GenericCsvUploadService<DTO, Entity> {
                 processCsvRecord(csvRecord, dTOList, validationErrors);
             }
         } catch (IOException | IllegalArgumentException e) {
-            log.info("There was an issue parsing the csv file: {}, {}", e.getMessage(), e);
-            // THROW HERE AS ISSUE WITH PARSING
+            log.info("There was an issue parsing the csv file:{}, {}, {}", file, e.getMessage(), e);
+            throw new IllegalArgumentException("There was an issue parsing the csv file: " + file + " " + e.getMessage());
         }
         return dTOList;
     }

@@ -48,10 +48,10 @@ public class ClientDTO implements CsvDataDTO {
 
     private List<AppointmentDTO> appointments;
 
-    @Size(max = 20, message = "Customer name can't exceed 40 characters")
+    @Size(max = 20, min = 1, message = "Customer first name can't exceed 40 characters or be empty")
     private String firstName;
 
-    @Size(max = 20, message = "Customer name can't exceed 40 characters")
+    @Size(max = 20, min = 1,  message = "Customer second name can't exceed 40 characters or be empty")
     private String secondName;
 
     @Email(message = "invalid email")
@@ -60,7 +60,7 @@ public class ClientDTO implements CsvDataDTO {
     @Size(max = 15, message = "Customer phone number can't exceed 15 characters")
     private String phone;
 
-    @NotNull(message = "Gender must be specified")
+    @NotNull
     private Gender gender;
 
     @NotNull(message = "Client banned flag must be true or false")

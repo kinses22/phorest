@@ -36,17 +36,18 @@ public class AppointmentDTO implements CsvDataDTO {
     }
 
     @Size(max = 36, message = "Appointment id can't exceed 36 characters")
-    @NotEmpty
+    @NotEmpty( message = "Appointment id can't be null")
     private String id;
 
     private ClientDTO clientDTO;
 
-    @NotNull
+    @NotNull( message = "Start time can't be null or empty")
     private OffsetDateTime startTime;
 
-    @NotNull
+    @NotNull( message = "End time can't be null or empty")
     private OffsetDateTime endTime;
 
+    @NotNull( message = "Services can't be null")
     private List<ServiceDTO> serviceDTO;
 
     private List<PurchaseDTO> purchaseDTO;

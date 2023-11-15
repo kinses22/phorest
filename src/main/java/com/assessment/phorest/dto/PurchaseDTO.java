@@ -19,7 +19,7 @@ public class PurchaseDTO implements CsvDataDTO {
     }
 
     @Size(max = 36, message = "Purchase id can't exceed 36 characters")
-    @NotEmpty
+    @NotEmpty(message = "Purchase id can't be empty or null")
     private String id;
 
     @NotNull(message = "A purchase needs an appointment")
