@@ -1,5 +1,6 @@
 package com.assessment.phorest.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -30,6 +31,7 @@ public class AppointmentDTO implements CsvDataDTO {
     @NotEmpty
     private String id;
 
+    @JsonIgnore
     private ClientDTO clientDTO;
 
     @NotNull

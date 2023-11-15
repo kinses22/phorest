@@ -1,9 +1,11 @@
 package com.assessment.phorest.entity;
 
 import com.assessment.phorest.enumeration.Gender;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -18,7 +20,8 @@ public class Client {
     private UUID id;
 
     @OneToMany(mappedBy = "client", cascade = CascadeType.REFRESH, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<Appointment> appointments;
+    @JsonManagedReference
+    private List<Appointment> appointments = new ArrayList<>();
 
     @Column(name = "first_name", length = 20)
     private String firstName;

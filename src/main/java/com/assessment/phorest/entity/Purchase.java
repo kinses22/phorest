@@ -1,5 +1,6 @@
 package com.assessment.phorest.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -15,9 +16,10 @@ public class Purchase {
     @Column(name = "purchase_id", nullable = false)
     private UUID id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "appointment_id")
     @JsonProperty("appointmentDTO")
+    @JsonBackReference
     private Appointment appointment;
 
     @Column(name = "name", length = 40)

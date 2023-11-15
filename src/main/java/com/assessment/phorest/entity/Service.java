@@ -1,5 +1,6 @@
 package com.assessment.phorest.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import jakarta.validation.Valid;
@@ -17,9 +18,10 @@ public class Service {
     @Column(name = "service_id", length = 36, nullable = false)
     private UUID id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "appointment_id")
     @JsonProperty("appointmentDTO")
+    @JsonBackReference
     private Appointment appointment;
 
     @Column(name = "name", length = 40)

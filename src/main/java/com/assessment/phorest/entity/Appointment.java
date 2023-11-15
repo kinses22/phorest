@@ -1,5 +1,7 @@
 package com.assessment.phorest.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -18,9 +20,10 @@ public class Appointment {
     @Column(name = "appointment_id", length = 36, nullable = false)
     private UUID id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonProperty("clientDTO")
     @JoinColumn(name = "client_id")
+    @JsonBackReference
     private Client client;
 
     @Column(name = "start_time")
@@ -30,11 +33,13 @@ public class Appointment {
     private OffsetDateTime endTime;
 
     @JsonProperty("serviceDTO")
-    @OneToMany(mappedBy = "appointment", cascade = CascadeType.REFRESH, orphanRemoval = true)
+    @OneToMany(mappedBy = "appointment", cascade = CascadeType.REFRESH, orphanRemoval = true, fetch = FetchType.LAZY)
+    @JsonManagedReference
     private List<Service> services = new ArrayList<>();
 
     @JsonProperty("purchaseDTO")
-    @OneToMany(mappedBy = "appointment", cascade = CascadeType.REFRESH, orphanRemoval = true)
+    @OneToMany(mappedBy = "appointment", cascade = CascadeType.REFRESH, orphanRemoval = true, fetch = FetchType.LAZY)
+    @JsonManagedReference
     private List<Purchase> purchases = new ArrayList<>();
 
 }
