@@ -17,7 +17,7 @@ public class Client {
     @Column(name = "client_id", length = 36, nullable = false)
     private UUID id;
 
-    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "client", cascade = CascadeType.REFRESH, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Appointment> appointments;
 
     @Column(name = "first_name", length = 20)
@@ -38,5 +38,4 @@ public class Client {
 
     @Column(name = "banned", length = 5)
     private boolean banned;
-
 }

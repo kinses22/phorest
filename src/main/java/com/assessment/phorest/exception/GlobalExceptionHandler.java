@@ -1,6 +1,7 @@
 package com.assessment.phorest.exception;
 
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,8 +22,15 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(InvalidFormatException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity<String> handleInvalidFormatException(IllegalArgumentException ex) {
+    public ResponseEntity<String> handleInvalidFormatException(InvalidFormatException ex) {
         log.error("InvalidFormatException: " + ex.getMessage(), ex);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Bad Request: " + ex.getMessage());
+    }
+
+    @ExceptionHandler(EntityNotFoundException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<String> handleEntityNotFoundException(EntityNotFoundException ex) {
+        log.error("EntityNotFoundException: " + ex.getMessage(), ex);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Bad Request: " + ex.getMessage());
     }
 

@@ -2,7 +2,7 @@ package com.assessment.phorest.service.generic;
 
 import com.assessment.phorest.dao.GenericRepository;
 import com.assessment.phorest.dto.response.CSVFileProcessingResponseDTO;
-import com.assessment.phorest.parser.GenericCsvParser;
+import com.assessment.phorest.row.GenericCsvRowMapper;
 import com.assessment.phorest.mapper.GenericMapper;
 import com.assessment.phorest.util.CsvConfig;
 import com.assessment.phorest.util.CsvFileConfig;
@@ -24,15 +24,15 @@ public abstract class GenericCsvUploadService<DTO, Entity> {
 
     private final GenericRepository<Entity> genericRepository;
     private final GenericMapper<DTO, Entity> mapper;
-    private final GenericCsvParser<DTO> genericCsvParser;
+    private final GenericCsvRowMapper<DTO> genericCsvRowMapper;
     private final Validator validator;
 
     @Autowired
     public GenericCsvUploadService(GenericRepository<Entity> genericRepository, GenericMapper<DTO, Entity> mapper,
-                                   GenericCsvParser<DTO> genericCsvParser, Validator validator) {
+                                   GenericCsvRowMapper<DTO> genericCsvRowMapper, Validator validator) {
         this.genericRepository = genericRepository;
         this.mapper = mapper;
-        this.genericCsvParser = genericCsvParser;
+        this.genericCsvRowMapper = genericCsvRowMapper;
         this.validator = validator;
     }
 
@@ -73,7 +73,7 @@ public abstract class GenericCsvUploadService<DTO, Entity> {
 
     private void processCsvRecord(CSVRecord csvRecord, List<DTO> dTOList, Map<String, List<String>> errors) {
         try {
-            DTO dto = genericCsvParser.createDTO(csvRecord);
+            DTO dto = genericCsvRowMapper.createDTO(csvRecord);
             Set<ConstraintViolation<DTO>> violations = validator.validate(dto);
             if (violations.isEmpty()) {
                 dTOList.add(dto);
@@ -92,6 +92,8 @@ public abstract class GenericCsvUploadService<DTO, Entity> {
     private void saveEntities(List<DTO> dTOList) {
         List<Entity> entityList = new ArrayList<>();
         dTOList.forEach(dto -> entityList.add(mapper.mapToEntity(dto)));
+        // todo: turn to save and loop and add errors to ones who dont save.
+        //  Use reflection to get access to the generic entity id
         genericRepository.saveAll(entityList);
     }
 

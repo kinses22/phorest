@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
-import java.time.ZonedDateTime;
+import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,8 +16,8 @@ public class AppointmentDTO implements CsvDataDTO {
     public AppointmentDTO(String id, String clientId, String startTime, String endTime) {
         this.id = id;
         this.clientDTO = new ClientDTO(clientId);
-        this.startTime = ZonedDateTime.parse(startTime, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss Z"));
-        this.endTime = ZonedDateTime.parse(endTime, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss Z"));
+        this.startTime = OffsetDateTime.parse(startTime, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss Z"));
+        this.endTime = OffsetDateTime.parse(endTime, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss Z"));
         this.serviceDTO = new ArrayList<>();
         this.purchaseDTO = new ArrayList<>();
     }
@@ -33,10 +33,10 @@ public class AppointmentDTO implements CsvDataDTO {
     private ClientDTO clientDTO;
 
     @NotNull
-    private ZonedDateTime startTime;
+    private OffsetDateTime startTime;
 
     @NotNull
-    private ZonedDateTime endTime;
+    private OffsetDateTime endTime;
 
     private List<ServiceDTO> serviceDTO;
 

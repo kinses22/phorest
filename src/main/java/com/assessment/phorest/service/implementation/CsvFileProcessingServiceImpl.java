@@ -2,6 +2,7 @@ package com.assessment.phorest.service.implementation;
 
 import com.assessment.phorest.dto.response.CSVBatchProcessingResponseDTO;
 import com.assessment.phorest.dto.response.CSVFileProcessingResponseDTO;
+import com.assessment.phorest.service.CsvFileProcessingService;
 import com.assessment.phorest.service.CsvFileUploadService;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
@@ -13,12 +14,12 @@ import static com.assessment.phorest.util.FileConstants.ALLOWED_FILE_NAMES;
 import static com.assessment.phorest.util.FileConstants.DESIRED_ORDER;
 
 @Service
-public class CsvFileProcessingService {
+public class CsvFileProcessingServiceImpl implements CsvFileProcessingService {
 
     @Resource
     private final Map<String, CsvFileUploadService> csvUploadServiceMap;
 
-    public CsvFileProcessingService(Map<String, CsvFileUploadService> csvUploadServiceMap) {
+    public CsvFileProcessingServiceImpl(Map<String, CsvFileUploadService> csvUploadServiceMap) {
         this.csvUploadServiceMap = csvUploadServiceMap;
     }
 

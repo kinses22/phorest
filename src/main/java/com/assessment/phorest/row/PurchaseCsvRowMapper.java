@@ -1,15 +1,15 @@
-package com.assessment.phorest.parser;
+package com.assessment.phorest.row;
 
-import com.assessment.phorest.dto.ServiceDTO;
+import com.assessment.phorest.dto.PurchaseDTO;
 import org.apache.commons.csv.CSVRecord;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ServiceCsvParser implements GenericCsvParser<ServiceDTO> {
+public class PurchaseCsvRowMapper implements GenericCsvRowMapper<PurchaseDTO> {
 
     @Override
-    public ServiceDTO createDTO(CSVRecord csvRecord) {
-        return new ServiceDTO(csvRecord.get("id"),
+    public PurchaseDTO createDTO(CSVRecord csvRecord) {
+        return new PurchaseDTO(csvRecord.get("id"),
                 csvRecord.get("appointment_id"),
                 csvRecord.get("name"),
                 Double.parseDouble(csvRecord.get("price")),

@@ -1,7 +1,7 @@
-package com.assessment.phorest.parser;
+package com.assessment.phorest.row;
 
 import org.apache.commons.csv.CSVRecord;
 
-public interface GenericCsvParser<DTO> {
+public interface GenericCsvRowMapper<DTO> {
     DTO createDTO(CSVRecord csvData);
 }

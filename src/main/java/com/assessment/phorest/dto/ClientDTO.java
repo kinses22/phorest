@@ -1,5 +1,6 @@
 package com.assessment.phorest.dto;
 
+import com.assessment.phorest.entity.Appointment;
 import com.assessment.phorest.enumeration.Gender;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
@@ -7,6 +8,8 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -19,6 +22,8 @@ public class ClientDTO implements CsvDataDTO {
     @Size(max = 36, message = "Client id can't exceed 36 characters")
     @NotEmpty
     private String id;
+
+    private List<Appointment> appointments;
 
     @Size(max = 20, message = "Customer name can't exceed 40 characters")
     private String firstName;

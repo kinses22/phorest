@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.time.ZonedDateTime;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -24,17 +24,17 @@ public class Appointment {
     private Client client;
 
     @Column(name = "start_time")
-    private ZonedDateTime startTime;
+    private OffsetDateTime startTime;
 
     @Column(name = "end_time")
-    private ZonedDateTime endTime;
+    private OffsetDateTime endTime;
 
     @JsonProperty("serviceDTO")
-    @OneToMany(mappedBy = "appointment", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "appointment", cascade = CascadeType.REFRESH, orphanRemoval = true)
     private List<Service> services = new ArrayList<>();
 
     @JsonProperty("purchaseDTO")
-    @OneToMany(mappedBy = "appointment", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "appointment", cascade = CascadeType.REFRESH, orphanRemoval = true)
     private List<Purchase> purchases = new ArrayList<>();
 
 }

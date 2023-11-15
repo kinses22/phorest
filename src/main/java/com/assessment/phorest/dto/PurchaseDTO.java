@@ -22,7 +22,7 @@ public class PurchaseDTO implements CsvDataDTO {
     @NotEmpty
     private String id;
 
-    @NotNull(message = "dsfdsfd")
+    @NotNull(message = "A purchase needs an appointment")
     private AppointmentDTO appointmentDTO;
 
     @Size(max = 40, min = 1, message = "Purchase name can't exceed 40 characters or be blank")
