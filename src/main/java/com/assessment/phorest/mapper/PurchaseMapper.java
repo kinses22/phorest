@@ -19,5 +19,9 @@ public class PurchaseMapper implements GenericMapper<PurchaseDTO, Purchase> {
     public Purchase mapToEntity(PurchaseDTO purchaseDto) {
         return objectMapper.convertValue(purchaseDto, Purchase.class);
     }
+
+    public PurchaseDTO mapToDTO(Purchase purchase) {
+        return objectMapper.convertValue(purchase, PurchaseDTO.class);
+    }
 }
 

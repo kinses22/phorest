@@ -3,11 +3,15 @@ package com.assessment.phorest.entity;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.UUID;
 
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
 @Data
 @Table(name = "purchase")
 public class Purchase {
@@ -19,6 +23,7 @@ public class Purchase {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "appointment_id")
     @JsonProperty("appointmentDTO")
+    @JsonBackReference
     private Appointment appointment;
 
     @Column(name = "name", length = 40)

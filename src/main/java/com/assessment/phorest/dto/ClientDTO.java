@@ -7,6 +7,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -15,21 +16,22 @@ import java.util.stream.Collectors;
 
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ClientDTO implements CsvDataDTO {
 
-    public ClientDTO(String id, List<Appointment> appointments,
-                     String firstName, String secondName,
-                     String email, String phone, Gender gender, boolean banned) {
-        this.id = id;
-        this.appointments = mapAppointmentsToDTOs(appointments);
-        this.firstName = firstName;
-        this.secondName = secondName;
-        this.email = email;
-        this.phone = phone;
-        this.gender = gender;
-        this.banned = banned;
-    }
+//    public ClientDTO(String id, List<Appointment> appointments,
+//                     String firstName, String secondName,
+//                     String email, String phone, Gender gender, boolean banned) {
+//        this.id = id;
+//        this.appointments = mapAppointmentsToDTOs(appointments);
+//        this.firstName = firstName;
+//        this.secondName = secondName;
+//        this.email = email;
+//        this.phone = phone;
+//        this.gender = gender;
+//        this.banned = banned;
+//    }
 
     private List<AppointmentDTO> mapAppointmentsToDTOs(List<Appointment> appointments) {
         return appointments.stream()

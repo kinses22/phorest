@@ -20,5 +20,10 @@ public class AppointmentMapper implements GenericMapper<AppointmentDTO, Appointm
     public Appointment mapToEntity(AppointmentDTO appointmentDto) {
         return objectMapper.convertValue(appointmentDto, Appointment.class);
     }
+
+    public AppointmentDTO mapToDTO(Appointment appointment) {
+        return objectMapper.convertValue(appointment, AppointmentDTO.class);
+    }
+
 }
 

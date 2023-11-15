@@ -19,5 +19,9 @@ public class ServiceMapper implements GenericMapper<ServiceDTO, Service>{
     public Service mapToEntity(ServiceDTO serviceDto) {
         return objectMapper.convertValue(serviceDto, Service.class);
     }
+
+    public ServiceDTO mapToDTO(Service service) {
+        return objectMapper.convertValue(service, ServiceDTO.class);
+    }
 }
 

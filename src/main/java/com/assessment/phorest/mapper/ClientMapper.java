@@ -16,14 +16,13 @@ public class ClientMapper implements GenericMapper<ClientDTO, Client> {
         this.objectMapper = objectMapper;
     }
 
+    @Override
     public Client mapToEntity(ClientDTO clientDTO) {
         return objectMapper.convertValue(clientDTO, Client.class);
     }
 
     public ClientDTO mapToDTO(Client client) {
-        return new ClientDTO(client.getId().toString(), client.getAppointments(), client.getFirstName(),
-        client.getSecondName(), client.getEmail(), client.getPhone(), client.getGender(),
-        client.isBanned());
+        return objectMapper.convertValue(client, ClientDTO.class);
     }
 }
 

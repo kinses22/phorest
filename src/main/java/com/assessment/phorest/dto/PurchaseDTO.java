@@ -1,9 +1,13 @@
 package com.assessment.phorest.dto;
 
 import jakarta.validation.constraints.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class PurchaseDTO implements CsvDataDTO {
 
     //todo: can probably inherit from one dto with purchases/services
