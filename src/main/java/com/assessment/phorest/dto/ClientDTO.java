@@ -55,6 +55,7 @@ public class ClientDTO implements CsvDataDTO {
     private String secondName;
 
     @Email(message = "invalid email")
+    @NotEmpty(message = "Email can not be null or empty")
     private String email;
 
     @Size(max = 15, message = "Customer phone number can't exceed 15 characters")
