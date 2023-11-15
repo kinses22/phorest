@@ -16,10 +16,12 @@ public class PurchaseMapper implements GenericMapper<PurchaseDTO, Purchase> {
         this.objectMapper = objectMapper;
     }
 
+    @Override
     public Purchase mapToEntity(PurchaseDTO purchaseDto) {
         return objectMapper.convertValue(purchaseDto, Purchase.class);
     }
 
+    @Override
     public PurchaseDTO mapToDTO(Purchase purchase) {
         return objectMapper.convertValue(purchase, PurchaseDTO.class);
     }

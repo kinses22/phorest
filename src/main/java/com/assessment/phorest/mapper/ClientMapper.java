@@ -21,6 +21,7 @@ public class ClientMapper implements GenericMapper<ClientDTO, Client> {
         return objectMapper.convertValue(clientDTO, Client.class);
     }
 
+    @Override
     public ClientDTO mapToDTO(Client client) {
         return objectMapper.convertValue(client, ClientDTO.class);
     }

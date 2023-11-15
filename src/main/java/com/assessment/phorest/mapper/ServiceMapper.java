@@ -20,6 +20,7 @@ public class ServiceMapper implements GenericMapper<ServiceDTO, Service>{
         return objectMapper.convertValue(serviceDto, Service.class);
     }
 
+    @Override
     public ServiceDTO mapToDTO(Service service) {
         return objectMapper.convertValue(service, ServiceDTO.class);
     }

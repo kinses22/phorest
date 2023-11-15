@@ -21,6 +21,7 @@ public class AppointmentMapper implements GenericMapper<AppointmentDTO, Appointm
         return objectMapper.convertValue(appointmentDto, Appointment.class);
     }
 
+    @Override
     public AppointmentDTO mapToDTO(Appointment appointment) {
         return objectMapper.convertValue(appointment, AppointmentDTO.class);
     }

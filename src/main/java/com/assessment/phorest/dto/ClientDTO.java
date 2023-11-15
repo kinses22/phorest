@@ -1,6 +1,5 @@
 package com.assessment.phorest.dto;
 
-import com.assessment.phorest.entity.Appointment;
 import com.assessment.phorest.enumeration.Gender;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.validation.constraints.Email;
@@ -12,33 +11,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ClientDTO implements CsvDataDTO {
-
-//    public ClientDTO(String id, List<Appointment> appointments,
-//                     String firstName, String secondName,
-//                     String email, String phone, Gender gender, boolean banned) {
-//        this.id = id;
-//        this.appointments = mapAppointmentsToDTOs(appointments);
-//        this.firstName = firstName;
-//        this.secondName = secondName;
-//        this.email = email;
-//        this.phone = phone;
-//        this.gender = gender;
-//        this.banned = banned;
-//    }
-
-    private List<AppointmentDTO> mapAppointmentsToDTOs(List<Appointment> appointments) {
-        return appointments.stream()
-                .map(appointment -> new AppointmentDTO(appointment.getId().toString(), appointment.getStartTime(),
-                        appointment.getEndTime()))
-                .collect(Collectors.toList());
-    }
 
     public ClientDTO(String id) {
         this.id = id;
