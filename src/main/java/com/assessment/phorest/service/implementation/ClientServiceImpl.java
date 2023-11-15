@@ -1,25 +1,39 @@
 package com.assessment.phorest.service.implementation;
 
 import com.assessment.phorest.dao.ClientRepository;
+import com.assessment.phorest.dto.ClientDTO;
 import com.assessment.phorest.dto.TopClientDTO;
+import com.assessment.phorest.entity.Client;
+import com.assessment.phorest.mapper.ClientMapper;
 import com.assessment.phorest.service.ClientService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.*;
+import java.util.Optional;
 import java.util.UUID;
 
 @Slf4j
 @Service
 public class ClientServiceImpl implements ClientService {
 
-    private ClientRepository clientRepository;
+    private final ClientRepository clientRepository;
+    private final ClientMapper clientMapper;
 
-    public ClientServiceImpl(ClientRepository clientRepository) {
+    @Autowired
+    public ClientServiceImpl(ClientRepository clientRepository, ClientMapper clientMapper) {
         this.clientRepository = clientRepository;
+        this.clientMapper = clientMapper;
+    }
+    @Override
+    public Optional<ClientDTO> getClientById(String clientID) {
+        Optional<Client> client = clientRepository.findById(UUID.fromString(clientID));
+        return client.map(clientMapper::mapToDTO);
+
     }
 
     @Override
@@ -32,7 +46,7 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public void deleteClient(String clientID) {
+    public void deleteClientById(String clientID) {
         clientRepository.deleteById(UUID.fromString(clientID));
     }
 

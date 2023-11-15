@@ -19,5 +19,9 @@ public class ClientMapper implements GenericMapper<ClientDTO, Client> {
     public Client mapToEntity(ClientDTO clientDTO) {
         return objectMapper.convertValue(clientDTO, Client.class);
     }
+
+    public ClientDTO mapToDTO(Client client) {
+        return objectMapper.convertValue(client, ClientDTO.class);
+    }
 }
 

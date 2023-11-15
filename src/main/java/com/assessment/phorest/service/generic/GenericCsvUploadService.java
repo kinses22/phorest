@@ -36,7 +36,6 @@ public abstract class GenericCsvUploadService<DTO, Entity> {
         this.validator = validator;
     }
 
-    //todo: bring back a model - errors etc etc
     public CSVFileProcessingResponseDTO processCsvFiles(MultipartFile file) {
         Map<String, List<String>> errors = new HashMap<>();
         String fileName = file.getOriginalFilename();
@@ -44,7 +43,6 @@ public abstract class GenericCsvUploadService<DTO, Entity> {
         CsvFileConfig csvFileConfig = CsvConfig.getConfigForFile(fileName);
         List<DTO> dTOList = parseCsvFile(file, csvFileConfig, errors);
         saveEntities(dTOList);
-        // todo: return model with errors, status etc
         return new CSVFileProcessingResponseDTO(fileName, errors);
 
     }

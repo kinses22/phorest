@@ -1,6 +1,7 @@
 package com.assessment.phorest.controller;
 
 
+import com.assessment.phorest.dto.ClientDTO;
 import com.assessment.phorest.dto.TopClientDTO;
 import com.assessment.phorest.service.ClientService;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -13,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -27,6 +29,13 @@ public class ClientController {
         this.clientService = clientService;
     }
 
+    @GetMapping("/{clientId}")
+    public ResponseEntity<ClientDTO> getClientById(@PathVariable String clientId) {
+        Optional<ClientDTO> clientDTO = clientService.getClientById(clientId);
+        return clientDTO.map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
     @GetMapping("/top-clients")
     public Page<TopClientDTO> getTopClientsWithLoyaltyPoints(
             //todo: describe api and data format
@@ -37,8 +46,8 @@ public class ClientController {
     }
 
     @DeleteMapping("/{clientId}")
-    public ResponseEntity<Void> deleteClient(@PathVariable String clientId) {
-        clientService.deleteClient(clientId);
+    public ResponseEntity<Void> deleteClientById(@PathVariable String clientId) {
+        clientService.deleteClientById(clientId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
