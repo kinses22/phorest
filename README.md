@@ -13,8 +13,19 @@ The below are links to each section of this readme.
 This application is to help onboard new customers to our platform. 
 The main functionality is to parse csv files provided by the customer
 and also to supply the customer with a list of their most loyal customers
-on demand. The application has been designed in a scalable way using generics
-so to adhere to the DRY principle. Many customers will have their own csv files
+on demand amongst other things.   
+  
+The application has been designed in a scalable way using generics
+so to adhere to the DRY principle. The biggest design decision that was made
+was to not roll back a file if there was either a validation error or some constraint
+issue when it was saved to the db. I decided to treat individual rows as transactions and
+catch any exceptions and add them to a list of errors along with the primary key so the user
+could fix the issue. This results in the creation of a dto being passed back with the file name,
+record of processed rows, validation errors and associated pk and a status - Processed, Partially
+Processed or Not Processed. This design is takes in to account the end user and sacrifices a bit of
+performance. 
+
+Many customers will have their own csv files
 and we will be able to handle them using customer specific DTOs that map to our entities. 
 
 
