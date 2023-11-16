@@ -42,7 +42,8 @@ and we will be able to handle them using customer specific DTOs that map to our 
 ####Swagger or Postman for API interactions 
 - http://localhost:8080/swagger-ui/index.html    
 
-####H2 for Database interactions
+####H2 for Database interactions   
+
 Username - sa  
 password - password  
 jdbc url - jdbc:h2:mem:testdb;MODE=PostgreSQL (sometimes it doesnt show)
