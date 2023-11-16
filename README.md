@@ -5,11 +5,12 @@ The below are links to each section of this readme.
 [Phorest Application](#phorest-application)  
 [How To Run](#how-to-run)  
 [Requirements](#requirements)  
-[Assumptions and Things to Note](#Assumptions)
-[Things I unfortunately didn't get to finish](#things-i-unfortunately-didnt-get-to-finish)
+[Assumptions and Things to Note](#Assumptions)   
+[Things I unfortunately didn't get to finish](#things-i-unfortunately-didnt-get-to-finish)   
 [Future Considerations and Development](#future-considerations)  
 
-#Phorest Application
+#Phorest Application   
+
 This application is to help onboard new customers to our platform. 
 The main functionality is to parse csv files provided by the customer
 and also to supply the customer with a list of their most loyal customers
@@ -39,15 +40,16 @@ and we will be able to handle them using customer specific DTOs that map to our 
 ##How to Use
 
 ####Swagger or Postman for API interactions 
-- http://localhost:8080/swagger-ui/index.html
+- http://localhost:8080/swagger-ui/index.html    
+
 ####H2 for Database interactions
 Username - sa  
 password - password  
 jdbc url - jdbc:h2:mem:testdb;MODE=PostgreSQL (sometimes it doesnt show)
 
-- http://localhost:8080/h2-console  
+- http://localhost:8080/h2-console   
 
-##Requirements
+##Requirements  
 - Minimum Version - Java 17
 
 ##Assumptions and Things to Note
@@ -64,8 +66,8 @@ docker image.
 This is a defensive strategy towards GDPR guidelines to make sure we are not vulnerable. 
 Better safe than sorry, but can always revisit and decide on a strategy to keep certain 
 data for audit / analysis purpose / accounting purposes (Store in S3/glacier , redshift etc ).
-I decided to put an index on the banned property (JPA) to improve query performance.
-The csv upload endpoint can handle one or many files. This is to allow migration to be a bit more flexible. 
+- I decided to put an index on the banned property (JPA) to improve query performance.
+- The csv upload endpoint can handle one or many files. This is to allow migration to be a bit more flexible. 
 The files will be processed in order by parent to child regardless of how you upload the 
 files. If you upload a file without the parent records you will get back a detailed dto
 with errors explaining theres a constraints issue for each specific record. If some of the records have parent entries,
