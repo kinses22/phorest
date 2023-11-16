@@ -1,12 +1,13 @@
 package com.assessment.phorest.service.implementation
 
-import com.assessment.phorest.dao.ClientRepository
-import com.assessment.phorest.dto.ClientDTO
+import com.assessment.phorest.dao.AppointmentRepository
+import com.assessment.phorest.dto.AppointmentDTO
+import com.assessment.phorest.entity.Appointment
 import com.assessment.phorest.entity.Client
 import com.assessment.phorest.enumeration.Gender
 import com.assessment.phorest.enumeration.Status
-import com.assessment.phorest.mapper.ClientMapper
-import com.assessment.phorest.row.ClientCsvRowMapper
+import com.assessment.phorest.mapper.AppointmentMapper
+import com.assessment.phorest.row.AppointmentCsvRowMapper
 import jakarta.validation.ConstraintViolation
 import jakarta.validation.Validator
 import org.springframework.dao.DataIntegrityViolationException
@@ -14,16 +15,18 @@ import org.springframework.mock.web.MockMultipartFile
 import spock.lang.Specification
 import spock.lang.Subject
 
-class ClientCsvUploadServiceSpec extends Specification {
+import java.time.OffsetDateTime
+
+class AppointmentCsvUploadServiceSpec extends Specification {
 
     @Subject
-    ClientCsvUploadService subjectUnderTest;
+    AppointmentCsvUploadService subjectUnderTest;
 
-    def clientMapper = Mock(ClientMapper)
+    def appointmentMapper = Mock(AppointmentMapper)
 
-    def genericCsvRowMapper = Mock(ClientCsvRowMapper)
+    def genericCsvRowMapper = Mock(AppointmentCsvRowMapper)
 
-    def genericRepository = Mock(ClientRepository)
+    def genericRepository = Mock(AppointmentRepository)
 
     def validator = Mock(Validator)
 
@@ -34,9 +37,9 @@ class ClientCsvUploadServiceSpec extends Specification {
     def mockDTO
 
     def setup() {
-        subjectUnderTest = new ClientCsvUploadService(genericRepository, clientMapper, genericCsvRowMapper, validator)
-        multipartFile = new MockMultipartFile("clients.csv", "clients.csv", "text/csv",
-                new FileInputStream(new File("clients.csv")));
+        subjectUnderTest = new AppointmentCsvUploadService(genericRepository, appointmentMapper, genericCsvRowMapper, validator)
+        multipartFile = new MockMultipartFile("appointments.csv", "appointments.csv", "text/csv",
+                new FileInputStream(new File("appointments.csv")));
         mockDTO = mockDTO()
         mockEntity = mockEntity()
 
@@ -46,7 +49,7 @@ class ClientCsvUploadServiceSpec extends Specification {
         given:
         2 * genericCsvRowMapper.createDTO(_) >> mockDTO
         2 * validator.validate(mockDTO) >> []
-        2 * clientMapper.mapToEntity(mockDTO) >> mockEntity
+        2 * appointmentMapper.mapToEntity(mockDTO) >> mockEntity
         2 * genericRepository.save(mockEntity)
 
 
@@ -54,7 +57,7 @@ class ClientCsvUploadServiceSpec extends Specification {
         def result = subjectUnderTest.processCsvFiles(multipartFile)
 
         then:
-        result.fileName == "clients.csv"
+        result.fileName == "appointments.csv"
         result.status == Status.PROCESSED
         result.recordsProcessed == 2
         assert result.getValidationErrors().isEmpty()
@@ -63,7 +66,7 @@ class ClientCsvUploadServiceSpec extends Specification {
     def "should not process CSV file and return expected status of not processed"() {
         given:
         2 * genericCsvRowMapper.createDTO(_) >> mockDTO
-        def violationMessage = 'email invalid'
+        def violationMessage = 'start date invalid'
         def constraintViolation = Mock(ConstraintViolation)
         Set<ConstraintViolation<?>> violations = new HashSet<>()
         violations.add(constraintViolation);
@@ -74,61 +77,61 @@ class ClientCsvUploadServiceSpec extends Specification {
         def result = subjectUnderTest.processCsvFiles(multipartFile)
 
         then:
-        result.fileName == "clients.csv"
+        result.fileName == "appointments.csv"
         result.status == Status.NOT_PROCESSED
         result.recordsProcessed == 0
         result.validationErrors.size() == 2
-        result.validationErrors['e0b8ebfc-6e57-4661-9546-328c644a3764'] == ['email invalid']
-        result.validationErrors['104fdf33-c8a2-4f1c-b371-3e9c2facdfa0'] == ['email invalid']
+        result.validationErrors['ef1e649c-e7b2-496f-82a1-38294f81d8de'] == ['start date invalid']
+        result.validationErrors['a5e0a200-6284-4919-8a7b-96b8ab03df03'] == ['start date invalid']
     }
 
     def "should partially process CSV file and return expected status of partially processed"() {
         given:
         2 * genericCsvRowMapper.createDTO(_) >> mockDTO
-        def violationMessage = 'email invalid'
+        def violationMessage = 'start date invalid'
         def constraintViolation = Mock(ConstraintViolation)
         Set<ConstraintViolation<?>> violations = new HashSet<>()
         violations.add(constraintViolation);
         1 * validator.validate(mockDTO) >> violations
         1 * validator.validate(mockDTO) >> []
         1 * constraintViolation.getMessage() >> violationMessage
-        1 * clientMapper.mapToEntity(mockDTO) >> mockEntity
+        1 * appointmentMapper.mapToEntity(mockDTO) >> mockEntity
         1 * genericRepository.save(mockEntity)
 
         when:
         def result = subjectUnderTest.processCsvFiles(multipartFile)
 
         then:
-        result.fileName == "clients.csv"
+        result.fileName == "appointments.csv"
         result.status == Status.PARTIALLY_PROCESSED
         result.recordsProcessed == 1
         result.validationErrors.size() == 1
-        result.validationErrors['e0b8ebfc-6e57-4661-9546-328c644a3764'] == ['email invalid']
+        result.validationErrors['ef1e649c-e7b2-496f-82a1-38294f81d8de'] == ['start date invalid']
     }
 
     def "should not process CSV file as errors from db and return expected status of not processed"() {
         given:
-        def client = new Client(UUID.fromString('e0b8ebfc-6e57-4661-9546-328c644a3764')
-                , [], "s", "r", "sds@ema", "1234", Gender.Female ,true)
-        def client1 = new Client(UUID.fromString('104fdf33-c8a2-4f1c-b371-3e9c2facdfa0'), [],
-                "s", "r", "sds@ema", "1234", Gender.Male ,true)
+        def appointment = new Appointment(UUID.fromString('ef1e649c-e7b2-496f-82a1-38294f81d8de'), new Client(UUID.fromString('e0b8ebfc-6e57-4661-9546-328c644a3764')
+                , [], "s", "r", "sds@ema", "1234", Gender.Female ,true) , OffsetDateTime.now() , OffsetDateTime.now(), [], [])
+        def appointment1 = new Appointment(UUID.fromString('a5e0a200-6284-4919-8a7b-96b8ab03df03'), new Client(UUID.fromString('e0b8ebfc-6e57-4661-9546-328c644a3764')
+                , [], "s", "r", "sds@ema", "1234", Gender.Female ,true) ,OffsetDateTime.now(), OffsetDateTime.now(), [], [])
         2 * genericCsvRowMapper.createDTO(_) >> mockDTO
         2 * validator.validate(mockDTO) >> []
-        1 * clientMapper.mapToEntity(mockDTO) >> client
-        1 * clientMapper.mapToEntity(mockDTO) >> client1
-        1 * genericRepository.save(client) >> { throw new DataIntegrityViolationException("Constraint violation") }
-        1 * genericRepository.save(client1) >> { throw new DataIntegrityViolationException("Constraint violation") }
+        1 * appointmentMapper.mapToEntity(mockDTO) >> appointment
+        1 * appointmentMapper.mapToEntity(mockDTO) >> appointment1
+        1 * genericRepository.save(appointment) >> { throw new DataIntegrityViolationException("Constraint violation") }
+        1 * genericRepository.save(appointment1) >> { throw new DataIntegrityViolationException("Constraint violation") }
 
         when:
         def result = subjectUnderTest.processCsvFiles(multipartFile)
 
         then:
-        result.fileName == "clients.csv"
+        result.fileName == "appointments.csv"
         result.status == Status.NOT_PROCESSED
         result.recordsProcessed == 0
         result.validationErrors.size() == 2
-        result.validationErrors['e0b8ebfc-6e57-4661-9546-328c644a3764'] == ['Sql constraint error']
-        result.validationErrors['104fdf33-c8a2-4f1c-b371-3e9c2facdfa0'] == ['Sql constraint error']
+        result.validationErrors['ef1e649c-e7b2-496f-82a1-38294f81d8de'] == ['Sql constraint error']
+        result.validationErrors['a5e0a200-6284-4919-8a7b-96b8ab03df03'] == ['Sql constraint error']
     }
 
     def "should not process CSV file as illegal argument thrown and return expected status of not processed"() {
@@ -139,27 +142,25 @@ class ClientCsvUploadServiceSpec extends Specification {
         def result = subjectUnderTest.processCsvFiles(multipartFile)
 
         then:
-        result.fileName == "clients.csv"
+        result.fileName == "appointments.csv"
         result.status == Status.NOT_PROCESSED
         result.recordsProcessed == 0
         result.validationErrors.size() == 2
-        result.validationErrors['e0b8ebfc-6e57-4661-9546-328c644a3764'] == ['no id']
-        result.validationErrors['104fdf33-c8a2-4f1c-b371-3e9c2facdfa0'] == ['no id']
+        result.validationErrors['ef1e649c-e7b2-496f-82a1-38294f81d8de'] == ['no id']
+        result.validationErrors['a5e0a200-6284-4919-8a7b-96b8ab03df03'] == ['no id']
     }
 
-    ClientDTO mockDTO() {
+    static AppointmentDTO mockDTO() {
         def id = "ef1e649c-e7b2-496f-82a1-38294f81d8de"
-        def firstName = "Stephen"
-        def lastName = "Kinsella"
-        def email = "sk@hotmail.com"
-        def phone = "04526681"
-        def gender = Gender.Male
-        def banned = false
+        def clientId = "007a2d25-acb0-461d-bb79-ed45750587b5"
+        def startTime = "2017-11-10 10:15:00 +0000"
+        def endTime = "2017-11-10 10:15:00 +0000"
 
-        return new ClientDTO(id, [], firstName, lastName, email, phone, gender, banned)
+        return new AppointmentDTO(id, clientId, startTime, endTime)
     }
 
-    Client mockEntity() {
-        return new Client()
+    static Appointment mockEntity() {
+        return new Appointment()
     }
+
 }
