@@ -32,6 +32,7 @@ public class ClientServiceImpl implements ClientService {
         this.clientRepository = clientRepository;
         this.clientMapper = clientMapper;
     }
+
     @Override
     public Optional<ClientDTO> getClientById(String clientID) {
         Optional<Client> client = clientRepository.findById(UUID.fromString(clientID));
@@ -40,7 +41,7 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public Page<TopClientDTO>   listTopClients(LocalDate startDate, int limit) {
+    public Page<TopClientDTO> listTopClients(LocalDate startDate, int limit) {
         validateLimit(limit);
         validateStartDate(startDate);
         OffsetDateTime startDateAndTime = LocalDateTime.of(startDate, LocalTime.MIDNIGHT).atOffset(ZoneOffset.UTC);
@@ -72,9 +73,9 @@ public class ClientServiceImpl implements ClientService {
     }
 
     private void validateLimit(int limit) {
-        if (limit <= 0 || limit >= 1000 ) {
+        if (limit <= 0 || limit >= 1000) {
             log.error("Validation failure on limit: {} . It must be greater than 0 and less than 1000 ", limit);
-            throw new IllegalArgumentException("Limit: " + limit +" must be greater than zero and less than 1000");
+            throw new IllegalArgumentException("Limit: " + limit + " must be greater than zero and less than 1000");
         }
     }
 

@@ -22,7 +22,7 @@ public class ServiceDTO implements CsvDataDTO {
     }
 
     @Size(max = 36, message = "Service id can't exceed 36 characters")
-    @NotEmpty( message = "Service id can't be empty")
+    @NotEmpty(message = "Service id can't be empty")
     private String id;
 
     @NotNull(message = "A purchase needs an appointment")

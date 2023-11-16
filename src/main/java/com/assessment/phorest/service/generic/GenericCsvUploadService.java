@@ -30,6 +30,7 @@ import static com.assessment.phorest.util.EntityUtil.getId;
 @Slf4j
 public abstract class GenericCsvUploadService<DTO, Entity> {
 
+    public static final String ID = "id";
     private final GenericRepository<Entity> genericRepository;
     private final GenericMapper<DTO, Entity> mapper;
     private final GenericCsvRowMapper<DTO> genericCsvRowMapper;
@@ -88,11 +89,11 @@ public abstract class GenericCsvUploadService<DTO, Entity> {
                 for (ConstraintViolation<DTO> violation : violations) {
                     violationErrors.add(violation.getMessage());
                 }
-                validationErrors.put(csvRecord.get("id").equals("") ? "ID field":
-                                csvRecord.get("id"), violationErrors);
+                validationErrors.put(csvRecord.get(ID).equals("") ? "ID field" :
+                        csvRecord.get(ID), violationErrors);
             }
         } catch (IllegalArgumentException e) {
-            validationErrors.put(csvRecord.get("id").equals("") ? "ID field" : csvRecord.get("id")
+            validationErrors.put(csvRecord.get(ID).equals("") ? "ID field" : csvRecord.get(ID)
                     , List.of(e.getMessage()));
         }
     }
@@ -120,9 +121,9 @@ public abstract class GenericCsvUploadService<DTO, Entity> {
 
     private Status getUploadStatus(Map<String, List<String>> validationErrors, int recordsProcessed) {
         Status status = Status.PROCESSED;
-        if (recordsProcessed == 0){
+        if (recordsProcessed == 0) {
             status = Status.NOT_PROCESSED;
-        } else if (!validationErrors.isEmpty()){
+        } else if (!validationErrors.isEmpty()) {
             status = Status.PARTIALLY_PROCESSED;
         }
         return status;

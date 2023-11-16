@@ -16,7 +16,7 @@ public class ClientRequestDTO {
     @Size(max = 20, min = 1, message = "Customer first name can't exceed 40 characters or be empty")
     private String firstName;
 
-    @Size(max = 20, min = 1,  message = "Customer second name can't exceed 40 characters or be empty")
+    @Size(max = 20, min = 1, message = "Customer second name can't exceed 40 characters or be empty")
     private String secondName;
 
     @Email(message = "invalid email")

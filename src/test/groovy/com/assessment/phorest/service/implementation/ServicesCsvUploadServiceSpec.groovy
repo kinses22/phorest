@@ -16,7 +16,6 @@ import spock.lang.Subject
 
 class ServicesCsvUploadServiceSpec extends Specification {
 
-
     @Subject
     ServicesCsvUploadService subjectUnderTest;
 
