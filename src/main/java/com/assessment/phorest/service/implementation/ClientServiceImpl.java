@@ -40,7 +40,7 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public Page<TopClientDTO> listTopClients(LocalDate startDate, int limit) {
+    public Page<TopClientDTO>   listTopClients(LocalDate startDate, int limit) {
         validateLimit(limit);
         validateStartDate(startDate);
         OffsetDateTime startDateAndTime = LocalDateTime.of(startDate, LocalTime.MIDNIGHT).atOffset(ZoneOffset.UTC);
@@ -55,7 +55,7 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public ClientDTO updateClient(ClientDTO clientDTO, ClientRequestDTO newClientDto) {
-
+        // todo: Not finished, would like to use reflection here
         updateIfNotNullOrNotEmpty(newClientDto.getFirstName(), clientDTO::setFirstName);
         updateIfNotNullOrNotEmpty(newClientDto.getSecondName(), clientDTO::setSecondName);
         updateIfNotNullOrNotEmpty(newClientDto.getEmail(), clientDTO::setEmail);
@@ -74,7 +74,7 @@ public class ClientServiceImpl implements ClientService {
     private void validateLimit(int limit) {
         if (limit <= 0 || limit >= 1000 ) {
             log.error("Validation failure on limit: {} . It must be greater than 0 and less than 1000 ", limit);
-            throw new IllegalArgumentException("Limit: " + limit +"must be greater than zero and less than 1000");
+            throw new IllegalArgumentException("Limit: " + limit +" must be greater than zero and less than 1000");
         }
     }
 
