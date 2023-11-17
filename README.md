@@ -105,7 +105,7 @@ coverage is around 90-95% in the main classes.
 overloading the system. This would be configurable through the application.properties file.
 - Phone numbers: I would strip any chars out and normalise them. There could be different country codes
 etc so would have to spend some time thinking of how to handle that.
-- Purchases and Services entities/dtos should share super classes called offering, 
+- Purchases and Services entities/dtos should share super class called offering, 
 requires some configuration with jackson and I didnt have the time to spend on it.
 - Consider returning a job id in future if files are really big and return a 202 
 and separate endpoint to find the status etc of the job.
