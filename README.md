@@ -9,7 +9,7 @@ The below are links to each section of this readme.
 [Things I unfortunately didn't get to finish](#things-i-unfortunately-didnt-get-to-finish)   
 [Future Considerations and Development](#future-considerations)  
 
-#Phorest Application   
+# Phorest Application   
 
 This application is to help onboard new customers to our platform. 
 The main functionality is to parse csv files provided by the customer
@@ -30,19 +30,19 @@ Many customers will have their own csv files
 and we will be able to handle them using customer specific DTOs that map to our entities. 
 
 
-##How To Run
+## How To Run
 ##### Maven Wrapper
 ./mvnw spring-boot:run
 
 ##### IDE
 - Some IDEs will autoconfigure a run function in the main class.
 
-##How to Use
+## How to Use
 
-####Swagger or Postman for API interactions 
+#### Swagger or Postman for API interactions 
 - http://localhost:8080/swagger-ui/index.html    
 
-####H2 for Database interactions   
+#### H2 for Database interactions   
 
 Username - sa  
 password - password  
@@ -50,11 +50,10 @@ jdbc url - jdbc:h2:mem:testdb;MODE=PostgreSQL (sometimes it doesnt show)
 
 - http://localhost:8080/h2-console   
 
-##Requirements  
+## Requirements  
 - Minimum Version - Java 17
 
-##Assumptions and Things to Note
-
+## Assumptions and Things to Note  
 - I assumed all future clients will be asked to adhere to our db models and provide csv 
 files labeled with clients, services, appointment and purchases with the same column 
 names as was provided. Obviously we could expand that with a factory method to get column names
@@ -101,7 +100,7 @@ at the end of the development process and unfortunately did not have time to wri
 have written rest assured tests with groovy/spock with the h2 in memory db. However I did write unit tests and the code 
 coverage is around 90-95% in the main classes.
 
-##Future Considerations and Development
+## Future Considerations and Development
 - In future, I would put a limit on file size and amount of files to prevent massive files being dumped and
 overloading the system. This would be configurable through the application.properties file.
 - Phone numbers: I would strip any chars out and normalise them. There could be different country codes
@@ -119,3 +118,6 @@ unwanted updates.
 - Addding a database table with the name of the file and its checksum after its fully processed
 could be a way to prevent it being processed again by doing a check to see if the checksum has 
 changed on the file.
+- I would also add more logging in the application. Error and debug Logging is a production issues best friend.
+- I would create also create custom exceptions for readability/encapsulation purposes and to be able to build up
+custom api errors and sub errors. Potentially add error codes depending on the sensitivity of the endpoint/data.
