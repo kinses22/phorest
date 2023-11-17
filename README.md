@@ -94,11 +94,13 @@ would know why and would know there are no purchases or services in the db.
 
 ## Things I unfortunately didn't get to finish
 - Update: I didnt finish the update fully. It's working but not as well as I would like and the code
-is clunky. I wanted to use reflection so all resources could reuse it.
+is clunky. I wanted to use reflection so all resources could reuse it. I forgot to add @Valid to the controller requestbody but it was on the
+to do list).
 - Rest tests: I developed this using spring boot version 3, a version I am not familiar with and could not get WebMVC tests to work
 at the end of the development process and unfortunately did not have time to write rest tests. If time permitted I would
 have written rest assured tests with groovy/spock with the h2 in memory db. However I did write unit tests and the code 
-coverage is around 90-95% in the main classes.
+coverage is around 90-95% in the main classes (except for the update, I didnt create a test as I was going to change the implementation to use reflection
+to not have to check each field manually to see if it changed).
 
 ## Future Considerations and Development
 - In future, I would put a limit on file size and amount of files to prevent massive files being dumped and
